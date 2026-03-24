@@ -1,0 +1,25 @@
+{
+  "name": "project-4(prodapt)",
+  "version": "1.0.0",
+  "description": "StartupForge is a comprehensive pipeline designed to take a raw seed of an idea and forge it into a validated, market-ready startup concept using a multi-layered AI approach.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.100.0",
+    "axios": "^1.13.6",
+    "body-parser": "^2.2.2",
+    "cohere-ai": "^7.20.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mongoose": "^9.3.2",
+    "pptxgenjs": "^4.0.1"
+  }
+}

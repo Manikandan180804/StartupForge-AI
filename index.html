@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StartupForge AI | Idea Generation & Validation System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar glass-panel">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h2>StartupForge</h2>
+            </div>
+            
+            <nav class="nav-links">
+                <div class="nav-item">
+                    <a href="#dashboard" class="nav-link active" onclick="showSection('dashboard', this)">
+                        <i class="fas fa-th-large"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#generate" class="nav-link" onclick="showSection('generate', this)">
+                        <i class="fas fa-brain"></i>
+                        <span>Idea Generation</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#validation" class="nav-link" onclick="showSection('validation', this)">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Validation Score</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#market" class="nav-link" onclick="showSection('market', this)">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Market Intelligence</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#tracking" class="nav-link" onclick="showSection('tracking', this)">
+                        <i class="fas fa-database"></i>
+                        <span>Experiment Logs</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer glass-panel" style="padding: 15px; font-size: 0.8rem; margin-top: auto;">
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div class="tool-status"><i class="fas fa-cog fa-spin" style="margin-right: 8px;"></i> ManusAI Connected</div>
+                    <div class="tool-status"><i class="fas fa-cog fa-spin" style="margin-right: 8px;"></i> Cohere Active</div>
+                    <div class="tool-status"><i class="fas fa-cog fa-spin" style="margin-right: 8px;"></i> CometML Linked</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="header">
+                <div class="header-info">
+                    <h1 id="page-title">Forge Dashboard</h1>
+                    <p style="color: var(--text-muted);">AI-Powered Startup Validation System</p>
+                </div>
+                <div class="user-profile">
+                    <div style="text-align: right;">
+                        <span style="display: block; font-weight: 600;">Founder Mode</span>
+                        <span style="color: var(--text-muted); font-size: 0.8rem;">Pro Access</span>
+                    </div>
+                    <div class="avatar" style="background: var(--bg-secondary); display: grid; place-items: center;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Section: Dashboard -->
+            <section id="dashboard-section" class="content-section">
+                <div class="results-grid animate-fade-in">
+                    <div class="glass-card idea-card">
+                        <h3 style="margin-bottom: 20px;">Project Overview</h3>
+                        <canvas id="overviewChart"></canvas>
+                    </div>
+                    <div class="glass-card idea-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <h4>Total Ideas Analyzed</h4>
+                            <h2 style="font-size: 2.5rem; margin: 10px 0; color: var(--accent-secondary);">24</h2>
+                            <p style="color: var(--accent-success); font-size: 0.9rem;">+12% from last week</p>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <button class="generate-btn" onclick="showSection('generate')">Start New Forge</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px;" class="animate-fade-in">
+                    <h3>Recent Generations</h3>
+                    <div id="recent-ideas" style="margin-top: 20px; display: grid; gap: 15px;">
+                        <!-- Placeholder list -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Idea Generation -->
+            <section id="generate-section" class="content-section" style="display: none;">
+                <div class="glass-panel input-section animate-fade-in">
+                    <div class="input-group">
+                        <label>Keywords & Industry</label>
+                        <input type="text" id="userInput" class="premium-input" placeholder="e.g., Sustainability, AI in Health, FinTech SaaS...">
+                    </div>
+                    <div class="input-group">
+                        <label>Problem Statement (Optional)</label>
+                        <textarea id="problemStatement" class="premium-input" rows="4" placeholder="What specific problem are you addressing?"></textarea>
+                    </div>
+                    <button id="generateBtn" class="generate-btn">
+                        <i class="fas fa-wand-magic-sparkles"></i>
+                        <span>Initiate AI Forge</span>
+                    </button>
+                    <div id="processing-log" style="margin-top: 25px; font-size: 0.85rem; color: var(--text-muted); display: none;">
+                        <div class="tool-step" id="step-manus"><i class="fas fa-circle-notch fa-spin"></i> ManusAI: Identifying raw concepts...</div>
+                        <div class="tool-step" id="step-cohere"><i class="fas fa-clock"></i> Cohere: Refining and grouping ideas...</div>
+                        <div class="tool-step" id="step-comet"><i class="fas fa-clock"></i> CometML: Logging experiment version...</div>
+                    </div>
+                </div>
+
+                <div id="results-display" class="results-grid animate-fade-in" style="margin-top: 40px;">
+                    <!-- Ideas will appear here -->
+                </div>
+            </section>
+
+            <!-- Section: Validation -->
+            <section id="validation-section" class="content-section" style="display: none;">
+                <div class="glass-panel" style="padding: 30px;">
+                    <h3>IdeaProof Analysis Matrix</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 25px;">Deep feasibility and risk assessment scoring.</p>
+                    <div id="validation-cards" class="results-grid">
+                        <!-- Validation cards -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Market Intel -->
+            <section id="market-section" class="content-section" style="display: none;">
+                <div class="results-grid">
+                    <div class="glass-card idea-card" style="grid-column: span 2;">
+                        <h3>Owlytics Trend Analysis</h3>
+                        <canvas id="trendChart" height="100"></canvas>
+                    </div>
+                    <div class="glass-card idea-card">
+                        <h3>Market Sentiment</h3>
+                        <canvas id="sentimentChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Tracking -->
+            <section id="tracking-section" class="content-section" style="display: none;">
+                <div class="glass-panel" style="padding: 30px;">
+                    <h3>CometML Experiment Logs</h3>
+                    <div style="overflow-x: auto; margin-top: 20px;">
+                        <table style="width: 100%; border-collapse: collapse; color: var(--text-muted);">
+                            <thead>
+                                <tr style="text-align: left; border-bottom: 1px solid var(--border-glass);">
+                                    <th style="padding: 15px;">Experiment ID</th>
+                                    <th>Model</th>
+                                    <th>Status</th>
+                                    <th>Accuracy</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="comet-logs">
+                                <!-- Logs appear here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
