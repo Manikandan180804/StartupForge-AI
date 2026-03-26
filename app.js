@@ -262,7 +262,7 @@ function displayResults(ideas) {
 }
 
 // ─── Section Switching ────────────────────────────────────────────────────────
-window.showSection = function (sectionId, link) {
+window.showSection = function (sectionId, link, forceReset) {
     if (link) {
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
         link.classList.add('active');
@@ -277,6 +277,16 @@ window.showSection = function (sectionId, link) {
     if (sectionId === 'tracking')   populateCometLogs();
     if (sectionId === 'validation') populateValidation();
     if (sectionId === 'dashboard')  initDashboard();
+    if (forceReset)                 resetForgeFields();
+};
+
+window.resetForgeFields = function() {
+    document.getElementById('userInput').value = '';
+    document.getElementById('problemStatement').value = '';
+    const results = document.getElementById('results-display');
+    if (results) results.innerHTML = '';
+    const log = document.getElementById('processing-log');
+    if (log) log.style.display = 'none';
 };
 
 // ─── Validation Score (Dynamic) ───────────────────────────────────────────────
