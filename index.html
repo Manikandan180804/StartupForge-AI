@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <div class="app-container">
@@ -71,15 +72,7 @@
                     <h1 id="page-title">Forge Dashboard</h1>
                     <p style="color: var(--text-muted);">AI-Powered Startup Validation System</p>
                 </div>
-                <div class="user-profile">
-                    <div style="text-align: right;">
-                        <span style="display: block; font-weight: 600;">Founder Mode</span>
-                        <span style="color: var(--text-muted); font-size: 0.8rem;">Pro Access</span>
-                    </div>
-                    <div class="avatar" style="background: var(--bg-secondary); display: grid; place-items: center;">
-                        <i class="fas fa-user"></i>
-                    </div>
-                </div>
+
             </header>
 
             <!-- Section: Dashboard -->
@@ -92,19 +85,22 @@
                     <div class="glass-card idea-card" style="display: flex; flex-direction: column; justify-content: space-between;">
                         <div>
                             <h4>Total Ideas Analyzed</h4>
-                            <h2 style="font-size: 2.5rem; margin: 10px 0; color: var(--accent-secondary);">24</h2>
-                            <p style="color: var(--accent-success); font-size: 0.9rem;">+12% from last week</p>
+                            <h2 id="total-ideas-count" style="font-size: 2.5rem; margin: 10px 0; color: var(--accent-secondary);">—</h2>
+                            <p style="color: var(--accent-success); font-size: 0.9rem;">Stored in Supabase</p>
                         </div>
-                        <div style="margin-top: 20px;">
+                        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
                             <button class="generate-btn" onclick="showSection('generate')">Start New Forge</button>
                         </div>
                     </div>
                 </div>
 
                 <div style="margin-top: 30px;" class="animate-fade-in">
-                    <h3>Recent Generations</h3>
-                    <div id="recent-ideas" style="margin-top: 20px; display: grid; gap: 15px;">
-                        <!-- Placeholder list -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3>Idea Generation History</h3>
+                        <span id="history-count" style="color: var(--text-muted); font-size: 0.85rem;"></span>
+                    </div>
+                    <div id="recent-ideas" style="display: grid; gap: 15px;">
+                        <p style="color: var(--text-muted); padding: 20px;">Loading history...</p>
                     </div>
                 </div>
             </section>
@@ -128,6 +124,7 @@
                         <div class="tool-step" id="step-manus"><i class="fas fa-circle-notch fa-spin"></i> ManusAI: Identifying raw concepts...</div>
                         <div class="tool-step" id="step-cohere"><i class="fas fa-clock"></i> Cohere: Refining and grouping ideas...</div>
                         <div class="tool-step" id="step-comet"><i class="fas fa-clock"></i> CometML: Logging experiment version...</div>
+                        <div class="tool-step" id="step-save"><i class="fas fa-clock"></i> Database: Saving to history...</div>
                     </div>
                 </div>
 
@@ -149,6 +146,10 @@
 
             <!-- Section: Market Intel -->
             <section id="market-section" class="content-section" style="display: none;">
+                <p id="market-note" style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px; display: none;">
+                    <i class="fas fa-info-circle" style="margin-right: 6px; color: var(--accent-secondary);"></i>
+                    Showing sample data. Run a forge from <strong>Idea Generation</strong> to see real scores here.
+                </p>
                 <div class="results-grid">
                     <div class="glass-card idea-card" style="grid-column: span 2;">
                         <h3>Owlytics Trend Analysis</h3>
@@ -184,6 +185,43 @@
                 </div>
             </section>
         </main>
+    </div>
+
+    <!-- AI Blueprint Modal -->
+    <div id="blueprint-modal" class="modal-overlay" onclick="closeBlueprint(event)">
+        <div class="modal-content animate-fade-in" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeBlueprint()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 5px;">
+                <div style="background: var(--accent-primary); width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center;">
+                    <i class="fas fa-microchip" style="color: white; font-size: 1.2rem;"></i>
+                </div>
+                <h2 style="font-size: 1.6rem; color: var(--text-main);">AI Implementation Blueprint</h2>
+            </div>
+            <p id="bp-idea-name" style="color: var(--accent-secondary); font-weight: 600; margin-bottom: 25px;">Idea Name</p>
+
+            <div style="margin-bottom: 30px;">
+                <h4 style="margin-bottom: 12px; font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px;">Suggested AI Tools</h4>
+                <div id="bp-tools">
+                    <!-- Tools here -->
+                </div>
+            </div>
+
+            <div>
+                <h4 style="margin-bottom: 15px; font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px;">Step-by-Step Implementation</h4>
+                <div id="bp-steps">
+                    <!-- Steps here -->
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 20px; background: rgba(0, 229, 255, 0.05); border: 1px solid rgba(0, 229, 255, 0.1); border-radius: 16px;">
+                <p style="font-size: 0.85rem; color: var(--text-muted);">
+                    <i class="fas fa-info-circle" style="color: var(--accent-secondary); margin-right: 8px;"></i>
+                    These tools allow you to build a working prototype in hours without deep coding knowledge. Use <strong>Cursor</strong> or <strong>Replit Agent</strong> to generate the initial codebase.
+                </p>
+            </div>
+        </div>
     </div>
 
     <script src="app.js"></script>

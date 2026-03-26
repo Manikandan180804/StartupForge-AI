@@ -73,6 +73,29 @@ app.post('/api/ideas', async (req, res) => {
     }
 });
 
+// Bulk Save Endpoint
+app.post('/api/ideas/bulk', async (req, res) => {
+    const ideas = Array.isArray(req.body) ? req.body : [req.body];
+    console.log(`📦 Bulk saving ${ideas.length} ideas...`);
+    
+    const saved = [];
+    for (const idea of ideas) {
+        const entry = { ...idea, id: Date.now() + Math.random(), created_at: new Date().toISOString() };
+        ideaCache.unshift(entry);
+        saved.push(entry);
+    }
+    
+    // Try to save to Supabase too (optional bulk)
+    try {
+        await supabase.from('ideas').insert(ideas.map(i => ({...i, created_at: new Date().toISOString()})));
+    } catch (e) {
+        console.warn("Supabase Bulk Insert Failed (using local cache):", e.message);
+    }
+
+    res.status(201).json({ status: 'saved', count: saved.length });
+});
+
+
 // AI Forge Endpoint with Cohere
 app.post('/api/forge', async (req, res) => {
     const { input, problem } = req.body;
@@ -81,7 +104,11 @@ app.post('/api/forge', async (req, res) => {
     try {
         const prompt = `Generate 2 unique startup ideas for the industry: ${input}. 
         Problem statement to address: ${problem || 'General market gaps'}.
-        Format as JSON array of objects with keys: name, sector, core, description, tags (array), score (number 0-100).
+        Format as JSON array of objects with keys: name, sector, core, description, tags (array), score (number 0-100), 
+        blueprint (object with keys: tools (array of strings), steps (array of strings)).
+        "core" should be a 1-2 word tech focus (e.g., "AI Legal Analysis").
+        "tools" should be modern AI tools like 'v0.dev', 'Cursor AI', 'Deepseek', 'Bolt.new', 'Replit Agent' etc.
+        "steps" should be a user-friendly 3-step guide to get to a working model.
         Respond ONLY with the JSON array.`;
 
         const response = await cohere.chat({
