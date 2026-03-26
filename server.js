@@ -107,8 +107,14 @@ app.post('/api/forge', async (req, res) => {
         Format as JSON array of objects with keys: name, sector, core, description, tags (array), score (number 0-100), 
         blueprint (object with keys: tools (array of strings), steps (array of strings)).
         "core" should be a 1-2 word tech focus (e.g., "AI Legal Analysis").
-        "tools" should be modern AI tools like 'v0.dev', 'Cursor AI', 'Deepseek', 'Bolt.new', 'Replit Agent' etc.
-        "steps" should be a user-friendly 3-step guide to get to a working model.
+        "tools" should be a HIGHLY OPTIMIZED 3-4 tool stack specifically for this idea. 
+        Examples: 
+        - For UI/UX: v0.dev, Canva AI, Framer AI.
+        - For Development: Cursor AI, Replit Agent, Bolt.new.
+        - For AI Logic: OpenAI API, LangChain, Pinecone, Groq.
+        - For Database/Auth: Supabase, Neon, Clerk.
+        - For Automation: Zapier Central, Make.com.
+        "steps" should be a user-friendly 3-step guide using THE SUGGESTED TOOLS to get to a working model.
         Respond ONLY with the JSON array.`;
 
         const response = await cohere.chat({
